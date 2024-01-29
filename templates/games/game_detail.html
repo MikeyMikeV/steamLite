@@ -1,0 +1,142 @@
+{%  extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+
+
+<div class="game_background">
+    
+    <div class="container">
+        <div class="game_head">
+            <p class="game_head-title">{{game_info.game.title}}</p>
+            <a class="game_head-community" href="">Community</a>
+        </div>  
+        
+        <div class="game-block">
+            <div class="game-block_galery">
+
+                <div class="sliders">
+                    {% for media in game_media %}
+                    <div class="slider-block">
+                        <div class="slider-wrapper"><img src="/media/{{media.file}}" alt=""></div>
+                    </div>
+                    {% endfor %}
+                
+                </div>
+
+                <div class="sliders-two">
+                    {% for media in game_media %}
+                    <div class="slider-block">
+                        <div class="slider-wrapper"><img src="/media/{{media.file}}" alt=""></div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="game-block_info">
+                <div class="block_info-poster">
+                    <img src="/media/{{game_info.poster}}" alt="">
+                </div>
+                <div class="block_info">
+                    <p class="block_info-desc">{{ game_info.description}}</p>
+                    <p class="block_info-data">Дата выхода: {{ game_info.publish_date }}</p>
+                    <p class="block_info-genre">Издатель: <a class="block_info_link" href="{% url 'publisher_detail' pcid=game_info.publisher.pk %}">{{game_info.publisher }}</a></p>
+                    <p class="block_info-genre">Разработчик: <a class="block_info_link" href="{% url 'creator_detail' pcid=game_info.creator.pk %}">{{ game_info.creator }}</a> </p>
+                </div>
+            </div>
+        </div>
+        <div>
+        {% if user.is_authenticated %}
+            {% if not game_info in profile.wishlist.all %}
+            <button id = 'wishlist' style="color: black;">Add to wishlist</button>
+            {% else %}
+            <button id = 'wishlist' style="color: black;">Remove from wishlist</button>
+            {% endif %}
+            
+            {% if not game_info in profile.ignore.all %}
+            <button id = 'ignore' style="color: black;">Ignore</button>
+            {% else %}
+            <button id = 'ignore' style="color: black;">Remove from ignored games</button>
+            {% endif %}
+        {% else %}
+            <a href="{% url 'account_login' %}?next={{request.path}}"><button style="color: black;">Add to wishlist</button></a>
+            <a href="{% url 'account_login' %}?next={{request.path}}"><button  style="color: black;">Ignore</button></a>
+        {% endif %}
+        </div>
+
+        {% if user.is_authenticated %}
+        {% comment %} {% if not profile in game_info.reviews.all.values('author') %} {% endcomment %}
+        <div>
+            <textarea type="text" id="review-text" style="width: 400px; height: 100px; color: black;"></textarea>
+            <div>
+                <button id="review-req-yes" style="color: black;">Yes</button>
+                <Button id="review-req-no" style="color: black;">No</Button>
+            </div>
+            <a href=""><div id="review-submit" style="padding-left: 350px;">Submit</div></a>
+        </div>
+        {% comment %} {% endif %} {% endcomment %}
+        {% endif %}
+
+        <div class="game_main">
+            <div class="game_main-info">
+
+            </div>
+
+            <div class="game_main-secondaryInfo"> 
+                {% if game_secondary_info.is_singleplayer %}
+                <div class="secondaryInfo-block">
+                    <p>Для одного игрока<p>
+                </div>
+                {% endif %}
+
+                {% if game_secondary_info.is_multiplayer %}
+                <div class="secondaryInfo-block">
+                    <p>Мультиплэер<p>
+                </div>
+                {% endif %}
+                
+                {% if game_secondary_info.has_crossplatforer %}
+                <div class="secondaryInfo-block">
+                    <p>Кроссплатформенная<p>
+                </div>
+                {% endif %}
+
+                <div class="secondaryInfo_all">
+                    <p>Название: {{game_info.game.title}} </p>
+                    <p>Жанр: {% for genre in genres %}{{genre.name}} {% endfor %}</p>
+                    <p>Разработчик: {{game_info.creator}}</p>
+                    <p>Издатель: {{game_info.publisher}}</p>
+                    <p>Дата выхода: {{game_info.publish_date}}</p>
+                    <p>Ранний доступ: {{game_info.early_access}} </p>
+                </div>
+
+                <div class="age_rist">
+                    {% if game_info.age_rist == 18 %}
+                    <img src="{% static 'age_rist/18+.webp' %}" style="width: 100px; height: 100px;" alt="">
+                    {% elif game_info.age_rist == 16 %}
+                    <img src="{% static 'age_rist/16+.webp' %}" style="width: 100px; height: 100px;" alt="">
+                    {% else %}
+                    <img src="{% static 'age_rist/12+.webp' %}" style="width: 100px; height: 100px;" alt="">
+                    {% endif %}
+                </div>
+            </div>
+
+            <div>
+                {% for review in game_info.reviews.all %}
+                    <img src="/media/{{review.author.avatar}}" alt="">
+                    <p>{{review.author.profile_name}}</p>
+                    <textarea name="" id="" cols="30" rows="10">{{review.text}}</textarea>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{{ game_info.game.pk|json_script:"gameID" }}
+
+
+<script src="/static/css/code.jquery.com_jquery-3.7.1.min.js"></script>
+<script src="/static/css/raw.githubusercontent.com_kenwheeler_slick_master_slick_slick.min.js"></script>
+<script src="/static/css/main.js"></script>
+<script src="/static/scripts/game_main_info.js"></script>
+
+{% endblock content %}
+

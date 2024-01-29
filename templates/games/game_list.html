@@ -1,0 +1,56 @@
+{%  extends 'base.html' %}
+{% block content %}
+{% load static %}
+<div class="container">
+    {% for game_info in game_info_list %}
+    
+    <div class="game-card">
+        <a class="game-card_a" href="{% url 'game_detail' gid=game_info.game.pk %}">
+            <div class="game-card_img">
+                <img src="/media/{{game_info.poster}}" alt="">
+            </div>
+            <div class="game-card_content">
+                <div class="game-card_desc">
+                    <p class="game-card_title">{{ game_info.game.title }}</p>
+                    <p class="game-card_desc"> {{game_info.description}}</p>
+                    <p class="game-card_genre">Жанр:{% for genre in game_info.genres %}{{genre}} {% endfor %}</p>
+                    
+                </div>
+                <p>{{game_info.price_info.get_discount_price}}тг {% if game_info.price_info.has_discount %}(sale {{game_info.price_info.discount_percent}}%){% endif %}</p>
+            </div>
+        </a>
+    </div>   
+    {% endfor %}
+    {% for genre in genres %}
+    <div style="width: 100px; height: 100px; float: left; margin-left: 20px;">
+        <div>
+            {% if genre.poster %}
+                <img src="/media/{{genre.poster}}" alt="" srcset="" style="width: 100px; height: 100px; object-fit: cover;">
+            {% else %}
+                <img src="{% static 'genre/default.jpg' %}" alt="" srcset="" style="width: 100px; height: 100px; object-fit: cover;">
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<div class="pagination">
+    <span class="step-links">
+        {% if game_info_list.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ game_info_list.previous_page_number }}">{{ game_info_list.previous_page_number }}</a>
+        {% endif %}
+
+        <span class="current" style="font-size: larger; color: rgb(193, 193, 193);">
+            {{ game_info_list.number }}
+        </span>
+
+        {% if game_info_list.has_next %}
+            <a href="?page={{ game_info_list.next_page_number }}">{{ game_info_list.next_page_number }}</a>
+            <a href="?page={{ game_info_list.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+        <span>
+            {{ game_info_list.paginator.num_pages }}
+        </span>
+    </span>
+</div>
+{% endblock content %}

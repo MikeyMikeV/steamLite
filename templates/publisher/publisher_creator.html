@@ -1,0 +1,38 @@
+{%  extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<div class="container">
+    <div class="publisher_block">
+        <div class="publisher_img">
+            <img src="/media/{{pc.image}}" alt="">
+        </div>
+        <div class="publisher_content">
+            <div class="publisher_content-title">
+                <p>{{ pc.name}}</p>
+            </div>
+            <div class="publisher_content-desc">
+                <p>{{pc.desc}}</p>
+            </div>
+        </div>
+        
+    </div>
+    <div>
+        <div>
+            {{pc.followers.count}}
+        </div>
+        <div>
+            <a href="{% url 'follow_pc' pcid=pc.pk %}">{% if not is_following %} Follow {% else %} Unfollow {% endif %}</a>
+        </div>
+    </div>
+
+    <div class="publisher_games">
+        <div class="publisher_game">
+            
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock content %}

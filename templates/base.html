@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steam</title>
+    <link rel="stylesheet" href="{% static  'css/steam.css' %}">
+    <link rel="stylesheet" href="/static/css/slick.css">
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+            <div class="container">
+                <nav>
+                    <div class="steam_menu">
+                        <div class="steam_logotip">
+                            <img src="{% static 'img/steam_logo10.png' %}" alt="">
+                            
+                            <a class="steam_logotip-title">Steam</a>
+                            
+                        </div>
+
+                        <div class="steam_nav">
+                            <a href="{% url 'game_list' %}">Shop</a>
+                            <a href="">Community</a>
+                            <a href="">Info</a>
+                            <a href="">Support</a>
+                        </div>
+                        {% if user.is_authenticated %}
+                        <img src="/media/{{profile.avatar}}" alt="" style="height: 100px; width: 100px; object-fit: cover;">
+                        {% else %}
+                        <img src="/static/images/profiles/avatars/default.jpg" style="height: 100px; width: 100px; object-fit: cover;">
+                        {% endif %}
+                    </div>
+
+                    <div class="steam_login">
+                        {% if user.is_authenticated %}
+                            <p>Hello {{user.username}}</p>
+                            <a href="{% url 'account_logout' %}?next={{request.path}}">LogOut</a>
+                        {% else %}
+                            <a href="{% url 'account_login' %}?next={{request.path}}">LogIn</a>
+                            <a href="{% url 'account_signup' %}?next={{request.path}}">SignUp</a>
+                            <a href="">Language</a>
+                        {% endif %}
+                    </div>
+                    
+                </nav>
+            </div>
+        </header>
+        
+        {% block content %}{% endblock content %}
+    </div>
+    
+</body>
+</html>
